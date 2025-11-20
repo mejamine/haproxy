@@ -1,0 +1,23 @@
+lobal
+    log         /dev/log        local0
+    chroot      /var/lib/haproxy
+    user        haproxy
+    group       haproxy
+    daemon
+
+defaults
+    log                     global
+    option                  httplog
+    option                  dontlognull
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+frontend main
+    bind *:80
+    stats enable
+    stats uri /haproxy?stats
+    default_backend http_back
+backend http_back
+    balance     roundrobin
+    server  server1 {{server1}}:{{general_port}} check
+    server  server2 {{server2}}:{{general_port}} check
